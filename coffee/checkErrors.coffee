@@ -1,2 +1,2 @@
-checkErrors = require "../lib/checkErrors"
+checkErrors = require "../lib/checkerrorslib"
 module.exports = checkErrors.registerWithGrunt
