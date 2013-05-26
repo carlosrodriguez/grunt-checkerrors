@@ -34,8 +34,7 @@ checkErrors.prototype =
         files = grunt.file.expand(@data[0].src[0])
         counter = 0
         total = files.length - 1
-        defaultChecks = @options.checks
-        checks = (if (typeof (@data.check) isnt "undefined") then @data.check else defaultChecks)
+        checks = @options.checks
         checker = ""
         _.each checks, (check) ->
             checker += "(" + check + ")|"
@@ -49,7 +48,7 @@ checkErrors.Defaults =
     checks: ['<<<<<<< HEAD']
 
 # Some static task information
-checkErrors.taskName = "checkErrors"
+checkErrors.taskName = "checkerrors"
 checkErrors.taskDescription = "A simple grunt plugin to check files for common compilation errors that may be missed when running automated builds"
 
 # A static helper method for registering with Grunt
