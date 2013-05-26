@@ -6,6 +6,9 @@ checkErrors = (task) ->
 
 checkErrors.prototype =
     run: () ->
+        console.log @options
+        console.log @
+        console.log task.options
         checkFile = (file) ->
             stats = fs.statSync(file)
             if stats.isFile()
