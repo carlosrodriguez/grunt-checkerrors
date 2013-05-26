@@ -1,7 +1,7 @@
 {
   "name": "grunt-checkerrors",
   "description": "A simple grunt plugin to check files for common compilation errors that may be missed when running automated builds",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "#",
   "contributors": [
     {
