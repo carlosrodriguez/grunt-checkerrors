@@ -49,7 +49,7 @@ module.exports = function (grunt) {
 			    flatten: true,
 			    cwd: '<%= files.coffee %>',
 			    src: ['*.coffee'],
-			    dest: 'lib',
+			    dest: 'tasks',
 			    ext: '.js'
 			}
 		},
