@@ -50,7 +50,7 @@ checkErrors.Defaults =
 
 # Some static task information
 checkErrors.taskName = "checkErrors"
-checkErrors.taskDescription = "checkErrors"
+checkErrors.taskDescription = "A simple grunt plugin to check files for common compilation errors that may be missed when running automated builds"
 
 # A static helper method for registering with Grunt
 checkErrors.registerWithGrunt = (grunt) ->
