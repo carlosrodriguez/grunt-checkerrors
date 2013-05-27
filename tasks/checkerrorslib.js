@@ -1,40 +1,47 @@
-var checkErrors;
+var checkErrors, fs, _;
+
+_ = require('lodash');
+
+fs = require('fs');
 
 checkErrors = function(task) {
   this.origTask = task;
-  this.options = task.options(checkErrors.Defaults);
+  this.options = checkErrors.Defaults;
 };
 
 checkErrors.prototype = {
-  run: function() {
-    var checkFile, checker, checks, counter, defaultChecks, done, files, total;
+  run: function(grunt) {
+    var checkFile, checker, checks, counter, done, files, total;
 
     checkFile = function(file) {
-      var check, stats;
+      var stats;
 
       stats = fs.statSync(file);
       if (stats.isFile()) {
-        fs.readFile(file, "utf8", function(error, data) {});
-        if (error) {
-          grunt.fail.fatal("Can't read file: " + file);
+        return fs.readFile(file, "utf8", function(error, data) {
+          var check;
+
           if (error) {
-            throw error;
+            grunt.fail.fatal("Can't read file: " + file);
+            if (error) {
+              throw error;
+            }
           }
-        }
-        check = data.match(checker);
-        if (check) {
-          grunt.log.error(check);
-          grunt.fail.fatal("Error found on file: " + file);
-          if (error) {
-            throw error;
+          check = data.match(checker);
+          if (check) {
+            grunt.log.error(check);
+            grunt.fail.fatal("Error found on file: " + file);
+            if (error) {
+              throw error;
+            }
           }
-        }
-        if (counter >= total) {
-          return done(true);
-        } else {
-          counter++;
-          return checkFile(files[counter]);
-        }
+          if (counter >= total) {
+            done(true);
+          } else {
+            counter++;
+            checkFile(files[counter]);
+          }
+        });
       } else {
         if (counter >= total) {
           return done(true);
@@ -44,12 +51,11 @@ checkErrors.prototype = {
         }
       }
     };
-    done = this.async();
-    files = grunt.file.expand(this.data[0].src[0]);
+    done = this.origTask.async();
+    files = grunt.file.expand(this.origTask.data[0].src[0]);
     counter = 0;
     total = files.length - 1;
-    defaultChecks = this.options.checks;
-    checks = (typeof this.data.check !== "undefined" ? this.data.check : defaultChecks);
+    checks = this.options.checks;
     checker = "";
     _.each(checks, function(check) {
       return checker += "(" + check + ")|";
@@ -63,7 +69,7 @@ checkErrors.Defaults = {
   checks: ['<<<<<<< HEAD']
 };
 
-checkErrors.taskName = "checkErrors";
+checkErrors.taskName = "checkerrors";
 
 checkErrors.taskDescription = "A simple grunt plugin to check files for common compilation errors that may be missed when running automated builds";
 
@@ -72,7 +78,7 @@ checkErrors.registerWithGrunt = function(grunt) {
     var task;
 
     task = new checkErrors(this);
-    return task.run();
+    return task.run(grunt);
   });
 };
 

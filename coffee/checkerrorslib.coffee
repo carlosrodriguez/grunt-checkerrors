@@ -1,31 +1,33 @@
+_ = require 'lodash'
+fs = require 'fs'
+
 checkErrors = (task) ->
     @origTask = task
 
-    @options = task.options checkErrors.Defaults
+    @options = checkErrors.Defaults # task.options checkErrors.Defaults
     return
 
 checkErrors.prototype =
-    run: () ->
-        console.log @options
-        console.log @
-        console.log task.options
+    run: (grunt) ->
         checkFile = (file) ->
             stats = fs.statSync(file)
             if stats.isFile()
                 fs.readFile file, "utf8", (error, data) ->
-                if error
-                    grunt.fail.fatal "Can't read file: " + file
-                    throw error  if error
-                check = data.match(checker)
-                if check
-                    grunt.log.error check
-                    grunt.fail.fatal "Error found on file: " + file
-                    throw error  if error
-                if counter >= total
-                    done true
-                else
-                    counter++
-                    checkFile files[counter]
+                    if error
+                        grunt.fail.fatal "Can't read file: " + file
+                        throw error  if error
+                    check = data.match(checker)
+                    if check
+                        grunt.log.error check
+                        grunt.fail.fatal "Error found on file: " + file
+                        throw error  if error
+                    if counter >= total
+                        done true
+                    else
+                        counter++
+                        checkFile files[counter]
+
+                    return
 
             else
                 if counter >= total
@@ -33,8 +35,8 @@ checkErrors.prototype =
                 else
                     counter++
                     checkFile files[counter]
-        done = @async()
-        files = grunt.file.expand(@data[0].src[0])
+        done = @origTask.async()
+        files = grunt.file.expand(@origTask.data[0].src[0])
         counter = 0
         total = files.length - 1
         checks = @options.checks
@@ -60,7 +62,7 @@ checkErrors.registerWithGrunt = (grunt) ->
     grunt.registerMultiTask checkErrors.taskName, checkErrors.taskDescription, () ->
         task = new checkErrors @
 
-        task.run()
+        task.run grunt
 
     return
 
